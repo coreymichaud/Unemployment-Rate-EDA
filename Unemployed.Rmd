@@ -1,0 +1,67 @@
+---
+title: "Exploratory Data Analysis of the Unemployment Rate of the United States Labor Force"
+author: "Corey Michaud"
+date: "`r Sys.Date()`"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+# About the Data
+This dataset, UNRATE.csv, was taken from [FRED](https://fred.stlouisfed.org/series/UNRATE) and captures the unemployment rate, as a percentage, of the United States labor force from January 1, 1948 to February 1, 2023. The labor force data is restricted to people 16 years of age and older who currently reside in one of the 50 states or the District of Columbia. These people do not reside in institutions or are on active duty in the Armed Forces.
+
+# Libraries Used
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(tseries)
+library(psych)
+```
+
+# Looking at the Raw Data
+```{r}
+unrate <- read.csv("UNRATE.csv", header = T)
+head(unrate)
+```
+This raw data consists of only 2 variables: the date (DATE) represented by year-day-month, and the unemployment rate (UNRATE) represented by percentage.
+
+# Any Missing Values?
+```{r}
+sum(is.na(unrate))
+```
+Nope!
+
+# Describing the Data
+```{r}
+describe(unrate$UNRATE)
+```
+Using the psych package, we can see the mean and median of our data is 5.73 and 5.5, respectively. The mean is greater than the median, so the unemployment rate is skewed by 0.83, which isn't that bad. The minimum percentage of unemployment was 2.5 (woo!) but the highest percentage of unemployment is 14.7.
+
+# Transforming to Time Series
+```{r}
+unrate$DATE <- ymd(unrate$DATE)
+urts <- ts(unrate$UNRATE, start = c(1948,1), frequency = 12) # URTS = Unemployment Rate Time Series
+head(urts, 24) # Head of first 2 years
+```
+Now the data is better organized by months and years, as well as now being a time series.
+
+# Plotting Preview
+```{r}
+autoplot(urts) +
+  labs(x = "Date (Years)", y = "Percentage", main = "h") +
+  ggtitle("Unemployment Rate") + theme(plot.title = element_text(hjust = 0.5))
+```
+We can see there is a massive outliar at the year 2020. It is shown that every few years the unemployment rate dips or peaks at different times, which we will be exploring a little bit later.
+
+# Stationarity
+We will be using the the Augmented Dickey-Fuller test to see if this time series data is stationary.
+```{r}
+adf.test(urts)
+```
+We can see from the output that the p-value is 0.0134, so testing at the alpha = 0.05 significance level we can see that the p-value is significant, indicating the data is stationary.
+
+# Data Visualization
+```{r}
+boxplot(urts, horizontal = T, xlab = "Unemployment Rate")
+```
+
