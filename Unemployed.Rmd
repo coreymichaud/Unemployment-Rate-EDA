@@ -51,7 +51,7 @@ autoplot(urts) +
   labs(x = "Date (Years)", y = "Percentage", main = "h") +
   ggtitle("Unemployment Rate") + theme(plot.title = element_text(hjust = 0.5))
 ```
-We can see there is a massive outliar at the year 2020. It is shown that every few years the unemployment rate dips or peaks at different times, which we will be exploring a little bit later.
+We can see there is a massive outlier at the year 2020. It is shown that every few years the unemployment rate dips or peaks at different times, which we will be exploring a little bit later.
 
 # Stationarity
 We will be using the the Augmented Dickey-Fuller test to see if this time series data is stationary.
