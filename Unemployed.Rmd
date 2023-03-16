@@ -63,5 +63,6 @@ We can see from the output that the p-value is 0.0134, so testing at the alpha =
 # Data Visualization
 ```{r}
 boxplot(urts, horizontal = T, xlab = "Unemployment Rate")
+head(urts)
 ```
 
